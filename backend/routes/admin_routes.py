@@ -7,7 +7,7 @@ from models.theater import Theater
 from models.booking import Booking
 from models.ticket import Ticket
 from models.show import Show
-from models.booking import Payment
+from models.booking import Booking, Payment
 
 admin_bp = Blueprint("admin_bp", __name__)
 
@@ -68,23 +68,12 @@ def delete_user(user_id):
     user_bookings = Booking.query.filter_by(user_id=user.id).all()
 
     for booking in user_bookings:
-
-        payment = Payment.query.filter_by(
-            booking_id=booking.id
-        ).first()
-
-        if payment:
-            db.session.delete(payment)
-
+        Payment.query.filter_by(booking_id=booking.id).delete()
         db.session.delete(booking)
 
-    user_tickets = Ticket.query.filter_by(user_id=user.id).all()
-
-    for ticket in user_tickets:
-        db.session.delete(ticket)
+    Ticket.query.filter_by(user_id=user.id).delete()
 
     db.session.delete(user)
-
     db.session.commit()
 
     return redirect(url_for("admin_bp.manage_users"))
