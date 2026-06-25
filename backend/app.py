@@ -20,7 +20,11 @@ from routes.admin_routes import admin_bp
 from routes.show_routes import show_bp
 from routes.ticket_routes import ticket_bp
 
-app = Flask(__name__)
+import os
+import sys
+
+sys.path.append(os.path.dirname(__file__))
+app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config.from_object(Config)
 app.secret_key = Config.SECRET_KEY
 
