@@ -11,3 +11,12 @@ class Show(db.Model):
 
     show_time = db.Column(db.String(100))
     price = db.Column(db.Float)
+
+    movie = db.relationship("Movie", back_populates="shows")
+    theater = db.relationship("Theater", back_populates="shows")
+    screen = db.relationship("Screen", back_populates="shows")
+    bookings = db.relationship(
+        "Booking",
+        back_populates="show",
+        cascade="all, delete-orphan"
+    )

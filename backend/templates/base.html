@@ -108,6 +108,12 @@
                     </a>
                 </li>
 
+                <li>
+                    <a class="dropdown-item" href="/change-password">
+                        Change Password
+                    </a>
+                </li>
+
                 {% if session.get('user_role') == 'admin' %}
                 <li>
                     <a class="dropdown-item" href="/admin/dashboard">

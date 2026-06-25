@@ -1,10 +1,27 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 import bcrypt
+from flask_login import login_user, logout_user
+from werkzeug.security import check_password_hash, generate_password_hash
 
+from auth.guards import login_required
 from extensions import db
 from models.user import User
 
 auth_bp = Blueprint("auth_bp", __name__)
+
+
+def password_matches(user, password):
+    try:
+        if check_password_hash(user.password, password):
+            return True
+    except ValueError:
+        pass
+
+    try:
+        return bcrypt.checkpw(password.encode(), user.password.encode())
+    except ValueError:
+        return False
+
 
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
@@ -16,15 +33,10 @@ def register():
         if User.query.filter_by(email=email).first():
             return "User already exists"
 
-        hashed_password = bcrypt.hashpw(
-            password.encode(),
-            bcrypt.gensalt()
-        ).decode()
-
         user = User(
             name=name,
             email=email,
-            password=hashed_password
+            password=generate_password_hash(password)
         )
 
         db.session.add(user)
@@ -46,7 +58,8 @@ def login():
         if not user:
             return "User not found"
 
-        if bcrypt.checkpw(password.encode(), user.password.encode()):
+        if password_matches(user, password):
+            login_user(user)
             session["user_id"] = user.id
             session["user_name"] = user.name
             session["user_role"] = user.role
@@ -59,10 +72,8 @@ def login():
 
 
 @auth_bp.route("/dashboard")
+@login_required
 def dashboard():
-    if "user_id" not in session:
-        return redirect(url_for("auth_bp.login"))
-
     return render_template(
         "dashboard.html",
         name=session["user_name"],
@@ -72,6 +83,7 @@ def dashboard():
 
 @auth_bp.route("/logout")
 def logout():
+    logout_user()
     session.clear()
     return redirect(url_for("auth_bp.login"))
 
@@ -81,22 +93,49 @@ def reset_password():
     if request.method == "POST":
         email = request.form["email"].strip().lower()
         new_password = request.form["new_password"]
+        confirm_password = request.form["confirm_password"]
+
+        if new_password != confirm_password:
+            return "Passwords do not match", 400
+
+        if len(new_password) < 6:
+            return "Password must be at least 6 characters", 400
 
         user = User.query.filter_by(email=email).first()
 
         if not user:
             return "User not found"
 
-        hashed_password = bcrypt.hashpw(
-            new_password.encode("utf-8"),
-            bcrypt.gensalt()
-        ).decode("utf-8")
-
-        user.password = hashed_password
+        user.password = generate_password_hash(new_password)
         db.session.commit()
 
-        if user.role == "admin":
-            return redirect(url_for("admin_bp.admin_dashboard"))
-        return redirect(url_for("auth_bp.dashboard"))
+        return redirect(url_for("auth_bp.login"))
 
     return render_template("reset_password.html")
+
+
+@auth_bp.route("/change-password", methods=["GET", "POST"])
+@login_required
+def change_password():
+    user = User.query.get_or_404(session["user_id"])
+
+    if request.method == "POST":
+        current_password = request.form["current_password"]
+        new_password = request.form["new_password"]
+        confirm_password = request.form["confirm_password"]
+
+        if not password_matches(user, current_password):
+            return "Current password is incorrect", 400
+
+        if new_password != confirm_password:
+            return "New passwords do not match", 400
+
+        if len(new_password) < 6:
+            return "Password must be at least 6 characters", 400
+
+        user.password = generate_password_hash(new_password)
+        db.session.commit()
+
+        return redirect(url_for("auth_bp.dashboard"))
+
+    return render_template("change_password.html")

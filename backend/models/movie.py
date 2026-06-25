@@ -46,5 +46,11 @@ class Movie(db.Model):
         default=datetime.utcnow
     )
 
+    shows = db.relationship(
+        "Show",
+        back_populates="movie",
+        cascade="all, delete-orphan"
+    )
+
     def __repr__(self):
         return f"<Movie {self.title}>"

@@ -6,14 +6,14 @@ import os
 from flask import send_file, current_app
 from reportlab.pdfgen import canvas
 
+from auth.guards import login_required
+
 ticket_bp = Blueprint("ticket_bp", __name__)
 
 
 @ticket_bp.route("/my-tickets")
+@login_required
 def my_tickets():
-
-    if "user_id" not in session:
-        return redirect(url_for("auth_bp.login"))
 
     tickets = Ticket.query.filter_by(
         user_id=session["user_id"]
@@ -24,12 +24,13 @@ def my_tickets():
         tickets=tickets
     )
 @ticket_bp.route("/download-ticket/<int:ticket_id>")
+@login_required
 def download_ticket(ticket_id):
 
-    if "user_id" not in session:
-        return redirect(url_for("auth_bp.login"))
-
     ticket = Ticket.query.get_or_404(ticket_id)
+
+    if ticket.user_id != session["user_id"] and session.get("user_role") != "admin":
+        return "Access denied", 403
 
     pdf_folder = os.path.join(
         current_app.root_path,

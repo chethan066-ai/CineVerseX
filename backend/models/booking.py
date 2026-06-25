@@ -12,6 +12,14 @@ class Booking(db.Model):
     status = db.Column(db.String(50), default="confirmed")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    show = db.relationship("Show", back_populates="bookings")
+    payment = db.relationship(
+        "Payment",
+        back_populates="booking",
+        cascade="all, delete-orphan",
+        uselist=False
+    )
+
 class Payment(db.Model):
     __tablename__ = "payments"
 
@@ -20,3 +28,5 @@ class Payment(db.Model):
     amount = db.Column(db.Float)
     method = db.Column(db.String(50))
     status = db.Column(db.String(50), default="success")
+
+    booking = db.relationship("Booking", back_populates="payment")

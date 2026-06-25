@@ -13,6 +13,18 @@ class Theater(db.Model):
 
     total_screens = db.Column(db.Integer, default=1)
 
+    screens = db.relationship(
+        "Screen",
+        back_populates="theater",
+        cascade="all, delete-orphan"
+    )
+
+    shows = db.relationship(
+        "Show",
+        back_populates="theater",
+        cascade="all, delete-orphan"
+    )
+
 
 class Screen(db.Model):
     __tablename__ = "screens"
@@ -27,3 +39,10 @@ class Screen(db.Model):
     screen_name = db.Column(db.String(100))
 
     total_seats = db.Column(db.Integer)
+
+    theater = db.relationship("Theater", back_populates="screens")
+    shows = db.relationship(
+        "Show",
+        back_populates="screen",
+        cascade="all, delete-orphan"
+    )

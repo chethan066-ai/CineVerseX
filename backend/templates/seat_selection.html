@@ -6,8 +6,10 @@
 
     <h2>🎟 Select Seats</h2>
 
-    <p><strong>Show ID:</strong> {{ show.id }}</p>
-    <p><strong>Price per seat:</strong> ₹{{ show.price }}</p>
+    <p><strong>Movie:</strong> {{ show.movie.title if show.movie else "Unknown Movie" }}</p>
+    <p><strong>Theater:</strong> {{ show.theater.name if show.theater else "Unknown Theater" }}</p>
+    <p><strong>Show Time:</strong> {{ show.show_time }}</p>
+    <p><strong>Price per seat:</strong> Rs. {{ show.price }}</p>
 
     <form method="POST" action="/book/{{ show.id }}">
 
@@ -41,7 +43,7 @@
         <input type="hidden" name="seats" id="seatsInput">
         <input type="hidden" name="total_amount" id="totalAmountInput">
 
-        <h4>Total: ₹<span id="totalAmount">0</span></h4>
+        <h4>Total: Rs. <span id="totalAmount">0</span></h4>
 
         <button class="btn btn-primary mt-3" type="submit">
             Confirm Booking

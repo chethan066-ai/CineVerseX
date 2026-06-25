@@ -1,9 +1,10 @@
 import os
 from uuid import uuid4
 
-from flask import Blueprint, render_template, request, current_app
+from flask import Blueprint, render_template, request, current_app, redirect, url_for
 from werkzeug.utils import secure_filename
 
+from auth.guards import admin_required
 from extensions import db
 from models.movie import Movie
 from models.show import Show
@@ -28,6 +29,7 @@ def movies():
 
 
 @movie_bp.route("/add-movie", methods=["GET", "POST"])
+@admin_required
 def add_movie():
 
     if request.method == "POST":
@@ -87,7 +89,7 @@ def add_movie():
         db.session.add(movie)
         db.session.commit()
 
-        return "Movie Added Successfully"
+        return redirect(url_for("movie_bp.movies"))
 
     return render_template("add_movie.html")
 
@@ -135,6 +137,7 @@ def search_movies():
         query=query
     )
 @movie_bp.route("/edit-movie/<int:movie_id>", methods=["GET", "POST"])
+@admin_required
 def edit_movie(movie_id):
 
     movie = Movie.query.get_or_404(movie_id)
@@ -150,13 +153,14 @@ def edit_movie(movie_id):
 
         db.session.commit()
 
-        return "Movie Updated Successfully"
+        return redirect(url_for("movie_bp.movie_details", movie_id=movie.id))
 
     return render_template(
         "edit_movie.html",
         movie=movie
     )
 @movie_bp.route("/delete-movie/<int:movie_id>")
+@admin_required
 def delete_movie(movie_id):
 
     movie = Movie.query.get_or_404(movie_id)
@@ -164,4 +168,4 @@ def delete_movie(movie_id):
     db.session.delete(movie)
     db.session.commit()
 
-    return "Movie Deleted Successfully"
+    return redirect(url_for("movie_bp.movies"))

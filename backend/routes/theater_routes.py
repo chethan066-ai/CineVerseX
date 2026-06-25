@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, url_for
+from auth.guards import admin_required
 from extensions import db
 from models.theater import Theater, Screen
 
@@ -12,6 +13,7 @@ def theaters():
 
 
 @theater_bp.route("/add-theater", methods=["GET", "POST"])
+@admin_required
 def add_theater():
 
     if request.method == "POST":
@@ -34,12 +36,13 @@ def add_theater():
         db.session.add(theater)
         db.session.commit()
 
-        return "Theater Added Successfully"
+        return redirect(url_for("theater_bp.theaters"))
 
     return render_template("add_theater.html")
 
 
 @theater_bp.route("/add-screen", methods=["GET", "POST"])
+@admin_required
 def add_screen():
 
     if request.method == "POST":
@@ -61,7 +64,7 @@ def add_screen():
         db.session.add(screen)
         db.session.commit()
 
-        return "Screen Added Successfully"
+        return redirect(url_for("theater_bp.screens"))
 
     theaters = Theater.query.all()
 
@@ -80,6 +83,7 @@ def screens():
     )
 @theater_bp.route("/edit-theater/<int:theater_id>",
                   methods=["GET","POST"])
+@admin_required
 def edit_theater(theater_id):
 
     theater = Theater.query.get_or_404(theater_id)
@@ -88,6 +92,8 @@ def edit_theater(theater_id):
 
         theater.name = request.form["name"]
         theater.city = request.form["city"]
+        theater.address = request.form["address"]
+        theater.total_screens = int(request.form["total_screens"] or 1)
 
         db.session.commit()
 
@@ -98,6 +104,7 @@ def edit_theater(theater_id):
         theater=theater
     )
 @theater_bp.route("/delete-theater/<int:theater_id>")
+@admin_required
 def delete_theater(theater_id):
 
     theater = Theater.query.get_or_404(theater_id)

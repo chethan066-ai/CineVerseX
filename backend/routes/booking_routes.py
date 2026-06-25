@@ -12,6 +12,7 @@ from flask import (
 )
 
 from extensions import db
+from auth.guards import login_required
 from models.show import Show
 from models.booking import Booking, Payment
 from models.ticket import Ticket
@@ -20,11 +21,8 @@ booking_bp = Blueprint("booking_bp", __name__)
 
 
 @booking_bp.route("/show/<int:show_id>/seats")
+@login_required
 def seat_selection(show_id):
-
-    if "user_id" not in session:
-        return redirect(url_for("auth_bp.login"))
-
     show = Show.query.get_or_404(show_id)
 
     seats = []
@@ -53,12 +51,11 @@ def seat_selection(show_id):
 
 
 @booking_bp.route("/book/<int:show_id>", methods=["POST"])
+@login_required
 def book_ticket(show_id):
-
-    if "user_id" not in session:
-        return redirect(url_for("auth_bp.login"))
-
     show = Show.query.get_or_404(show_id)
+    movie_name = show.movie.title if show.movie else "Unknown Movie"
+    theatre_name = show.theater.name if show.theater else "Unknown Theatre"
 
     seats = request.form["seats"]
     total_amount = float(request.form["total_amount"])
@@ -105,8 +102,8 @@ def book_ticket(show_id):
 
     ticket = Ticket(
         user_id=session["user_id"],
-        movie_name="KGF Chapter 2",
-        theatre_name="Roopa",
+        movie_name=movie_name,
+        theatre_name=theatre_name,
         show_time=show.show_time,
         seat_numbers=seats,
         total_amount=total_amount,
@@ -122,7 +119,7 @@ def book_ticket(show_id):
         f"Theatre: {ticket.theatre_name}\n"
         f"Show Time: {ticket.show_time}\n"
         f"Seats: {ticket.seat_numbers}\n"
-        f"Amount: ₹{ticket.total_amount}"
+        f"Amount: Rs. {ticket.total_amount}"
     )
 
     qr_folder = os.path.join(
@@ -131,8 +128,7 @@ def book_ticket(show_id):
         "qrcodes"
     )
 
-    if not os.path.isdir(qr_folder):
-       os.mkdir(qr_folder)
+    os.makedirs(qr_folder, exist_ok=True)
 
     qr_filename = f"ticket_{ticket.id}.png"
     qr_path = os.path.join(qr_folder, qr_filename)
@@ -148,11 +144,8 @@ def book_ticket(show_id):
 
 
 @booking_bp.route("/bookings")
+@login_required
 def bookings():
-
-    if "user_id" not in session:
-        return redirect(url_for("auth_bp.login"))
-
     user_bookings = Booking.query.filter_by(
         user_id=session["user_id"]
     ).all()
@@ -164,12 +157,12 @@ def bookings():
 
 
 @booking_bp.route("/ticket/<int:booking_id>")
+@login_required
 def ticket_details(booking_id):
-
-    if "user_id" not in session:
-        return redirect(url_for("auth_bp.login"))
-
     booking = Booking.query.get_or_404(booking_id)
+
+    if booking.user_id != session["user_id"] and session.get("user_role") != "admin":
+        return "Access denied", 403
 
     return render_template(
         "ticket_details.html",

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, url_for
 
+from auth.guards import admin_required
 from extensions import db
 from models.user import User
 from models.movie import Movie
@@ -13,11 +14,8 @@ admin_bp = Blueprint("admin_bp", __name__)
 
 
 @admin_bp.route("/admin/dashboard")
+@admin_required
 def admin_dashboard():
-
-    if session.get("user_role") != "admin":
-        return "Access denied. Admin only."
-
     total_users = User.query.count()
     total_movies = Movie.query.count()
     total_theaters = Theater.query.count()
@@ -41,11 +39,8 @@ def admin_dashboard():
 
 
 @admin_bp.route("/admin/users")
+@admin_required
 def manage_users():
-
-    if session.get("user_role") != "admin":
-        return "Access denied. Admin only."
-
     users = User.query.all()
 
     return render_template(
@@ -55,11 +50,8 @@ def manage_users():
 
 
 @admin_bp.route("/admin/delete-user/<int:user_id>")
+@admin_required
 def delete_user(user_id):
-
-    if session.get("user_role") != "admin":
-        return "Access denied"
-
     user = User.query.get_or_404(user_id)
 
     if user.role == "admin":

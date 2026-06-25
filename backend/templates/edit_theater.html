@@ -22,6 +22,18 @@
             class="form-control mb-3"
         >
 
+        <textarea
+            name="address"
+            class="form-control mb-3"
+        >{{ theater.address or "" }}</textarea>
+
+        <input
+            type="number"
+            name="total_screens"
+            value="{{ theater.total_screens }}"
+            class="form-control mb-3"
+        >
+
         <button class="btn btn-success">
             Update Theater
         </button>

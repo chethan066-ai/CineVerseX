@@ -10,7 +10,9 @@
 
         <tr>
             <th>ID</th>
-            <th>Show ID</th>
+            <th>Movie</th>
+            <th>Theater</th>
+            <th>Show Time</th>
             <th>Seats</th>
             <th>Amount</th>
             <th>Status</th>
@@ -20,9 +22,11 @@
 
         <tr>
             <td>{{ booking.id }}</td>
-            <td>{{ booking.show_id }}</td>
+            <td>{{ booking.show.movie.title if booking.show and booking.show.movie else booking.show_id }}</td>
+            <td>{{ booking.show.theater.name if booking.show and booking.show.theater else "-" }}</td>
+            <td>{{ booking.show.show_time if booking.show else "-" }}</td>
             <td>{{ booking.seats }}</td>
-            <td>₹{{ booking.total_amount }}</td>
+            <td>Rs. {{ booking.total_amount }}</td>
             <td>{{ booking.status }}</td>
         </tr>
 
