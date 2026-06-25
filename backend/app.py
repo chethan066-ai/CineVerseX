@@ -68,12 +68,17 @@ def health():
 
 
 def create_default_admin():
-    admin_email = "ncheth066@gmail.com"
+    admin_email = "nchethan066@gmail.com"
     admin_password = "admin123"
 
     existing_admin = User.query.filter_by(email=admin_email).first()
 
-    if not existing_admin:
+    if existing_admin:
+        existing_admin.name = "Admin"
+        existing_admin.password = generate_password_hash(admin_password)
+        existing_admin.role = "admin"
+        db.session.commit()
+    else:
         admin = User(
             name="Admin",
             email=admin_email,
