@@ -40,6 +40,7 @@ class Movie(db.Model):
     )
 
     trailer_url = db.Column(db.String(300))
+    imdb_url = db.Column(db.String(300))
 
     created_at = db.Column(
         db.DateTime,

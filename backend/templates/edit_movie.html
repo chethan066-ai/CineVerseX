@@ -59,6 +59,14 @@
             class="form-control mb-3"
             placeholder="https://www.youtube.com/watch?v=xxxx">
 
+        <label class="form-label">IMDb URL</label>
+        <input
+            type="url"
+            name="imdb_url"
+            value="{{ movie.imdb_url or '' }}"
+            class="form-control mb-3"
+            placeholder="https://www.imdb.com/title/ttxxxxxxx/">
+
         <button class="btn btn-success">
             Update Movie
         </button>

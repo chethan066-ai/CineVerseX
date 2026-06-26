@@ -184,6 +184,9 @@ def ensure_schema_updates():
         if "trailer_url" not in movie_columns:
             connection.exec_driver_sql("ALTER TABLE movies ADD COLUMN trailer_url VARCHAR(300)")
 
+        if "imdb_url" not in movie_columns:
+            connection.exec_driver_sql("ALTER TABLE movies ADD COLUMN imdb_url VARCHAR(300)")
+
         setting_updates = {
             "site_name": "ALTER TABLE system_settings ADD COLUMN site_name VARCHAR(100) DEFAULT 'CineVerseX'",
             "support_email": "ALTER TABLE system_settings ADD COLUMN support_email VARCHAR(120) DEFAULT 'support@cineversex.com'",

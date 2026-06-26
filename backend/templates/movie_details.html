@@ -55,8 +55,8 @@
                 {{ movie.description }}
             </p>
 
-            {% if movie.trailer_url %}
             <div class="d-flex gap-2 flex-wrap mt-4">
+                {% if movie.trailer_url %}
                 <a
                     href="#movieTrailer"
                     class="btn btn-danger">
@@ -70,8 +70,19 @@
                     rel="noopener noreferrer">
                     Open in YouTube
                 </a>
+
+                {% endif %}
+
+                {% if movie.imdb_url %}
+                <a
+                    href="{{ movie.imdb_url }}"
+                    class="btn btn-warning"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    <i class="fas fa-star"></i> View on IMDb
+                </a>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
 

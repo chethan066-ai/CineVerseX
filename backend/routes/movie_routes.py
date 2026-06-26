@@ -103,6 +103,7 @@ def add_movie():
         release_date = request.form["release_date"].strip()
         rating = float(request.form["rating"] or 0)
         trailer_url = normalize_youtube_embed_url(request.form.get("trailer_url"))
+        imdb_url = (request.form.get("imdb_url") or "").strip()
 
         existing_movie = Movie.query.filter_by(title=title).first()
 
@@ -147,7 +148,8 @@ def add_movie():
             genre=genre,
             release_date=release_date,
             rating=rating,
-            trailer_url=trailer_url
+            trailer_url=trailer_url,
+            imdb_url=imdb_url
         )
 
         db.session.add(movie)
@@ -264,6 +266,7 @@ def edit_movie(movie_id):
         movie.release_date = request.form["release_date"]
         movie.rating = float(request.form["rating"])
         movie.trailer_url = normalize_youtube_embed_url(request.form.get("trailer_url"))
+        movie.imdb_url = (request.form.get("imdb_url") or "").strip()
 
         db.session.commit()
 
