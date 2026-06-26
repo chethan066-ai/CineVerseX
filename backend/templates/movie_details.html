@@ -4,113 +4,170 @@
 
 <div class="container mt-5">
 
-<div class="row">
-
-    <div class="col-lg-4">
-
-        <img
-            src="{{ url_for('static', filename=movie.poster_url) }}"
-            class="img-fluid rounded shadow"
-            style="width:100%; max-height:600px; object-fit:cover;"
-        >
-
-    </div>
-
-    <div class="col-lg-8">
-
-        <h1 class="mb-3">
-            {{ movie.title }}
-        </h1>
-
-        <h4 class="text-warning mb-3">
-            ⭐ {{ movie.rating }}/10
-        </h4>
-
-        <div class="mb-3">
-
-            <span class="badge bg-primary">
-                {{ movie.language }}
-            </span>
-
-            <span class="badge bg-success">
-                {{ movie.genre }}
-            </span>
-
-            <span class="badge bg-danger">
-                {{ movie.release_date }}
-            </span>
-
+    <div class="row">
+        <div class="col-lg-4">
+            {% if movie.poster_url %}
+            <img
+                src="{{ url_for('static', filename=movie.poster_url) }}"
+                class="img-fluid rounded shadow"
+                style="width:100%; max-height:600px; object-fit:cover;"
+                alt="{{ movie.title }}">
+            {% else %}
+            <div class="card shadow text-center p-5">
+                <i class="fas fa-film fa-3x mb-3"></i>
+                <p class="mb-0">No poster available</p>
+            </div>
+            {% endif %}
         </div>
 
-        <hr>
+        <div class="col-lg-8">
+            <h1 class="mb-3">
+                {{ movie.title }}
+            </h1>
 
-        <h4>About Movie</h4>
-
-        <p class="fs-5">
-            {{ movie.description }}
-        </p>
-
-    </div>
-
-</div>
-
-<hr class="my-5">
-
-<h2 class="mb-4">
-    🎭 Available Theaters
-</h2>
-
-{% if theaters %}
-
-    {% for data in theaters.values() %}
-
-    <div class="card mb-4 shadow">
-
-        <div class="card-body">
-
-            <h4>
-                {{ data.theater.name }}
+            <h4 class="text-warning mb-3">
+                <i class="fas fa-star"></i> {{ movie.rating }}/10
             </h4>
 
-            <p class="text-muted">
-                {{ data.theater.city }}
-            </p>
+            <div class="mb-3">
+                <span class="badge bg-primary">
+                    {{ movie.language }}
+                </span>
 
-            <div class="mt-3">
+                <span class="badge bg-success">
+                    {{ movie.genre }}
+                </span>
 
-                {% for show in data.shows %}
-
-                <a
-                    href="/show/{{ show.id }}/seats"
-                    class="btn btn-warning me-2 mb-2">
-
-                    🎟 {{ show.show_time }}
-
-                    <br>
-
-                    ₹{{ show.price }}
-
-                </a>
-
-                {% endfor %}
-
+                <span class="badge bg-danger">
+                    {{ movie.release_date }}
+                </span>
             </div>
 
+            <hr>
+
+            <h4>About Movie</h4>
+
+            <p>
+                <strong>Genre:</strong> {{ movie.genre or "Not set" }}
+            </p>
+
+            <p class="fs-5">
+                {{ movie.description }}
+            </p>
+        </div>
+    </div>
+
+    <hr class="my-5">
+
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div>
+                <h2 class="mb-1">Ratings & Reviews</h2>
+                <p class="text-muted mb-0">
+                    Average Rating:
+                    <strong>{{ avg_rating }}/5</strong>
+                </p>
+            </div>
         </div>
 
-    </div>
+        {% if current_user.is_authenticated %}
+        <form
+            method="POST"
+            action="{{ url_for('movie_bp.add_review', movie_id=movie.id) }}"
+            class="card shadow mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Rating</label>
+                        <select name="rating" class="form-control" required>
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Good</option>
+                            <option value="3">3 - Average</option>
+                            <option value="2">2 - Poor</option>
+                            <option value="1">1 - Bad</option>
+                        </select>
+                    </div>
 
-    {% endfor %}
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label">Comment</label>
+                        <textarea
+                            name="comment"
+                            class="form-control"
+                            rows="3"
+                            placeholder="Share what you thought about this movie"></textarea>
+                    </div>
+                </div>
 
-{% else %}
+                <button class="btn btn-primary">
+                    Submit Review
+                </button>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-info">
+            Log in to add your review.
+        </div>
+        {% endif %}
 
+        {% for review in reviews %}
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap">
+                    <strong>{{ review.user.name }}</strong>
+                    <span class="badge bg-warning">{{ review.rating }}/5</span>
+                </div>
+
+                {% if review.comment %}
+                <p class="mt-3 mb-2">{{ review.comment }}</p>
+                {% endif %}
+
+                <small class="text-muted">
+                    {{ review.created_at.strftime("%d %b %Y, %I:%M %p") }}
+                </small>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-muted">No reviews yet.</p>
+        {% endfor %}
+    </section>
+
+    <hr class="my-5">
+
+    <h2 class="mb-4">
+        <i class="fas fa-building"></i> Available Theaters
+    </h2>
+
+    {% if theaters %}
+        {% for data in theaters.values() %}
+        <div class="card mb-4 shadow">
+            <div class="card-body">
+                <h4>
+                    {{ data.theater.name }}
+                </h4>
+
+                <p class="text-muted">
+                    {{ data.theater.city }}
+                </p>
+
+                <div class="mt-3">
+                    {% for show in data.shows %}
+                    <a
+                        href="/show/{{ show.id }}/seats"
+                        class="btn btn-warning me-2 mb-2">
+                        <i class="fas fa-ticket-alt"></i> {{ show.show_time }}
+                        <br>
+                        Rs. {{ show.price }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
     <div class="alert alert-warning">
-
         No shows available for this movie.
-
     </div>
-
-{% endif %}
+    {% endif %}
 </div>
 
 {% endblock %}

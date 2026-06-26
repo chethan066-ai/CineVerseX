@@ -16,6 +16,16 @@ from models.theater import Theater
 movie_bp = Blueprint("movie_bp", __name__)
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+GENRES = [
+    "Action",
+    "Comedy",
+    "Drama",
+    "Romance",
+    "Thriller",
+    "Horror",
+    "Animation",
+    "Sci-Fi",
+]
 
 
 def allowed_file(filename):
@@ -27,8 +37,20 @@ def allowed_file(filename):
 
 @movie_bp.route("/movies")
 def movies():
-    all_movies = Movie.query.all()
-    return render_template("movies.html", movies=all_movies)
+    selected_genre = request.args.get("genre", "")
+    query = Movie.query
+
+    if selected_genre:
+        query = query.filter_by(genre=selected_genre)
+
+    all_movies = query.all()
+
+    return render_template(
+        "movies.html",
+        movies=all_movies,
+        genres=GENRES,
+        selected_genre=selected_genre
+    )
 
 
 @movie_bp.route("/add-movie", methods=["GET", "POST"])
@@ -40,7 +62,7 @@ def add_movie():
         title = request.form["title"].strip()
         description = request.form["description"].strip()
         language = request.form["language"].strip()
-        genre = request.form["genre"].strip()
+        genre = request.form.get("genre", "").strip()
         release_date = request.form["release_date"].strip()
         rating = float(request.form["rating"] or 0)
 
@@ -198,7 +220,7 @@ def edit_movie(movie_id):
         movie.title = request.form["title"]
         movie.description = request.form["description"]
         movie.language = request.form["language"]
-        movie.genre = request.form["genre"]
+        movie.genre = request.form.get("genre", "").strip()
         movie.release_date = request.form["release_date"]
         movie.rating = float(request.form["rating"])
 
@@ -208,7 +230,8 @@ def edit_movie(movie_id):
 
     return render_template(
         "edit_movie.html",
-        movie=movie
+        movie=movie,
+        genres=GENRES
     )
 @movie_bp.route("/delete-movie/<int:movie_id>")
 @admin_required

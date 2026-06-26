@@ -27,12 +27,14 @@
             class="form-control mb-3"
         >
 
-        <input
-            type="text"
-            name="genre"
-            value="{{ movie.genre }}"
-            class="form-control mb-3"
-        >
+        <label class="form-label">Genre</label>
+        <select name="genre" class="form-control mb-3" required>
+            {% for g in genres %}
+                <option value="{{ g }}" {% if movie.genre == g %}selected{% endif %}>
+                    {{ g }}
+                </option>
+            {% endfor %}
+        </select>
 
         <input
             type="text"

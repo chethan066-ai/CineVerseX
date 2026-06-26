@@ -56,13 +56,13 @@
                         required
                     >
 
-                    <input
-                        type="text"
-                        name="genre"
-                        class="form-control mb-3"
-                        placeholder="Genre"
-                        required
-                    >
+                    <label class="form-label">Genre</label>
+                    <select name="genre" class="form-control mb-3" required>
+                        <option value="">Select Genre</option>
+                        {% for g in ["Action","Comedy","Drama","Romance","Thriller","Horror","Animation","Sci-Fi"] %}
+                            <option value="{{ g }}">{{ g }}</option>
+                        {% endfor %}
+                    </select>
 
                     <input
                         type="text"

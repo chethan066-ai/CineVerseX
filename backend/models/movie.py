@@ -28,9 +28,7 @@ class Movie(db.Model):
         db.String(50)
     )
 
-    genre = db.Column(
-        db.String(100)
-    )
+    genre = db.Column(db.String(100), nullable=True)
 
     release_date = db.Column(
         db.String(50)
@@ -51,6 +49,5 @@ class Movie(db.Model):
         back_populates="movie",
         cascade="all, delete-orphan"
     )
-
     def __repr__(self):
         return f"<Movie {self.title}>"
