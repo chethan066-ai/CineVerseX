@@ -12,6 +12,7 @@ from werkzeug.utils import secure_filename
 from auth.guards import admin_required, login_required
 from extensions import db
 from models.movie import Movie
+from models.booking import Booking
 from models.review import Review
 from models.show import Show
 from models.theater import Theater
@@ -156,12 +157,21 @@ def tmdb_trailer_url(details):
     return ""
 
 
-def import_tmdb_popular_movies(pages=1, region="IN"):
+def import_tmdb_popular_movies(pages=1, region="IN", replace=False):
     if not tmdb_is_configured():
         return 0, "Set TMDB_API_KEY or TMDB_BEARER_TOKEN first."
 
     imported_count = 0
     pages = max(1, min(int(pages or 1), 5))
+
+    if replace:
+        if Booking.query.count() > 0:
+            return 0, "Cannot replace movie catalog while bookings exist."
+
+        Review.query.delete()
+        Show.query.delete()
+        Movie.query.delete()
+        db.session.commit()
 
     for page in range(1, pages + 1):
         popular = fetch_json(
@@ -299,9 +309,13 @@ def add_movie():
 @admin_required
 def import_tmdb_movies():
     pages = request.form.get("pages", 1)
+    replace = request.form.get("replace") == "1"
 
     try:
-        imported_count, message = import_tmdb_popular_movies(pages=pages)
+        imported_count, message = import_tmdb_popular_movies(
+            pages=pages,
+            replace=replace
+        )
         category = "success" if imported_count or tmdb_is_configured() else "warning"
         flash(message, category)
     except Exception as error:

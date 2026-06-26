@@ -23,7 +23,7 @@
         class="card shadow-sm mb-4">
         <div class="card-body">
             <div class="row g-2 align-items-end">
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <label class="form-label">Import Movie List From TMDb</label>
                     <p class="text-muted mb-0">
                         Requires <code>TMDB_API_KEY</code> or <code>TMDB_BEARER_TOKEN</code>.
@@ -39,6 +39,21 @@
                         <option value="4">4 pages</option>
                         <option value="5">5 pages</option>
                     </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Mode</label>
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="replace"
+                            value="1"
+                            id="replaceCatalog">
+                        <label class="form-check-label" for="replaceCatalog">
+                            Replace
+                        </label>
+                    </div>
                 </div>
 
                 <div class="col-md-3">
