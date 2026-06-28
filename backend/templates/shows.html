@@ -102,23 +102,20 @@
                     <a href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}" class="btn btn-outline-warning">
                         Details
                     </a>
-                    {% if movie.bookmyshow_url %}
                     <a
-                        href="{{ url_for('booking_bp.seat_selection', show_id=show.id) }}"
+                        href="{{ url_for('booking_bp.seat_selection', show_id=show.id) if movie.bookmyshow_url else 'https://in.bookmyshow.com/' }}"
                         class="btn btn-primary"
                         target="_blank"
                         rel="noopener noreferrer">
                         BookMyShow
                     </a>
-                    {% else %}
                     <a
                         href="{{ movie.justwatch_url or 'https://www.justwatch.com/in/search?q=' ~ movie.title|urlencode }}"
-                        class="btn btn-primary"
+                        class="btn btn-outline-warning"
                         target="_blank"
                         rel="noopener noreferrer">
                         JustWatch
                     </a>
-                    {% endif %}
                 </div>
             </div>
         </article>

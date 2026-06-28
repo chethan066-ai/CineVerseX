@@ -53,6 +53,7 @@
                 <div class="cx-card-actions">
                     <a href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}">Details</a>
                     <a href="{{ movie.justwatch_url or 'https://www.justwatch.com/in/search?q=' ~ movie.title|urlencode }}" target="_blank" rel="noopener noreferrer">JustWatch</a>
+                    <a href="{{ movie.bookmyshow_url or 'https://in.bookmyshow.com/' }}" target="_blank" rel="noopener noreferrer">BookMyShow</a>
                 </div>
             </div>
         </article>
@@ -96,6 +97,8 @@
                 <div class="cx-card-actions">
                     <a href="{{ url_for('movie_bp.imdb_movie_details', tconst=movie.tconst) }}">Details</a>
                     <a href="https://www.imdb.com/title/{{ movie.tconst }}/" target="_blank" rel="noopener noreferrer">IMDb</a>
+                    <a href="https://in.bookmyshow.com/" target="_blank" rel="noopener noreferrer">BookMyShow</a>
+                    <a href="https://www.justwatch.com/in/search?q={{ movie.primaryTitle|urlencode }}" target="_blank" rel="noopener noreferrer">JustWatch</a>
                 </div>
             </div>
         </article>

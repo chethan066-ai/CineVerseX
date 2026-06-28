@@ -136,6 +136,7 @@
                 <div class="cx-card-actions">
                     <a href="{{ url_for('movie_bp.imdb_movie_details', tconst=movie.tconst) }}">Details</a>
                     <a target="_blank" rel="noopener noreferrer" href="https://www.imdb.com/title/{{ movie.tconst }}/">IMDb</a>
+                    <a target="_blank" rel="noopener noreferrer" href="https://in.bookmyshow.com/">BookMyShow</a>
                     <a target="_blank" rel="noopener noreferrer" href="https://www.justwatch.com/in/search?q={{ movie.primaryTitle|urlencode }}">JustWatch</a>
                 </div>
             </div>
@@ -184,9 +185,7 @@
                 <div class="cx-card-actions">
                     <a href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}">Details</a>
                     <a target="_blank" rel="noopener noreferrer" href="{{ movie.justwatch_url or 'https://www.justwatch.com/in/search?q=' ~ movie.title|urlencode }}">JustWatch</a>
-                    {% if movie.bookmyshow_url %}
-                    <a target="_blank" rel="noopener noreferrer" href="{{ movie.bookmyshow_url }}">BookMyShow</a>
-                    {% endif %}
+                    <a target="_blank" rel="noopener noreferrer" href="{{ movie.bookmyshow_url or 'https://in.bookmyshow.com/' }}">BookMyShow</a>
                     {% if session.get("user_id") %}
                     <a href="{{ url_for('wishlist_bp.add_to_wishlist', movie_id=movie.id) }}">Wishlist</a>
                     {% endif %}
