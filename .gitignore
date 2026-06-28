@@ -2,6 +2,8 @@ __pycache__/
 *.py[cod]
 
 *.log
+.env
+backend/.env
 
 *.db
 *.sqlite
