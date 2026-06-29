@@ -19,7 +19,7 @@ from models.review import Review
 from models.show import Show
 from models.theater import Theater
 from services.activity_service import log_activity
-from services.catalog_data import BOOKMYSHOW_HOME_URL, KNOWN_BOOKMYSHOW_LINKS
+from services.catalog_data import BOOKMYSHOW_HOME_URL
 
 movie_bp = Blueprint("movie_bp", __name__)
 
@@ -128,10 +128,7 @@ def bookmyshow_search_url(title):
     if not title:
         return BOOKMYSHOW_HOME_URL
 
-    return KNOWN_BOOKMYSHOW_LINKS.get(
-        normalize_title_key(title),
-        f"https://in.bookmyshow.com/search?q={quote_plus(title)}"
-    )
+    return f"https://in.bookmyshow.com/search?q={quote_plus(title)}"
 
 
 def justwatch_search_url(title):

@@ -17,7 +17,6 @@ from services.catalog_data import (
     CURATED_UPCOMING_RELEASES,
     FEATURED_MOVIE_DETAILS,
     IMDBAPI_BASE_URL,
-    KNOWN_BOOKMYSHOW_LINKS,
     THEATER_NETWORK,
     THEATER_RENAMES,
     TMDB_BASE_URL,
@@ -48,10 +47,7 @@ def bookmyshow_search_url(title):
     if not title:
         return BOOKMYSHOW_HOME_URL
 
-    return KNOWN_BOOKMYSHOW_LINKS.get(
-        normalize_title_key(title),
-        f"https://in.bookmyshow.com/search?q={quote_plus(title)}"
-    )
+    return f"https://in.bookmyshow.com/search?q={quote_plus(title)}"
 
 
 def normalize_bookmyshow_movie_url(url):

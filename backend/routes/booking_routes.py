@@ -69,18 +69,7 @@ def effective_bookmyshow_url(movie):
     if not movie:
         return BOOKMYSHOW_HOME_URL
 
-    direct_url = bookmyshow_search_url(movie.title)
-
-    if direct_url != BOOKMYSHOW_HOME_URL:
-        return direct_url
-
-    for attribute_name in ("bookmyshow_url", "bookmyshow_movie_url", "bookmyshow_ticket_url"):
-        candidate = (getattr(movie, attribute_name, "") or "").strip()
-
-        if candidate and candidate != BOOKMYSHOW_HOME_URL:
-            return candidate
-
-    return BOOKMYSHOW_HOME_URL
+    return bookmyshow_search_url(movie.title)
 
 
 def send_ticket_email(booking, ticket):
