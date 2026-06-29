@@ -3590,6 +3590,210 @@ body.theme-dark .btn-danger:disabled {
     color: #FFFFFF !important;
 }
 
+/* Final compact sizing pass: moderate banners, movie panels, and grids. */
+.cx-shell,
+.container,
+.container-fluid > .container,
+.cx-detail-page > .cx-shell {
+    width: min(100% - 32px, 1180px) !important;
+    max-width: 1180px !important;
+}
+
+.page-content {
+    padding-top: clamp(16px, 2.2vw, 28px) !important;
+}
+
+.cx-hero-carousel {
+    min-height: clamp(320px, 44vh, 430px) !important;
+    border-radius: 18px !important;
+}
+
+.cx-hero-slide {
+    min-height: clamp(320px, 44vh, 430px) !important;
+    padding: clamp(22px, 4vw, 46px) !important;
+}
+
+.cx-hero-carousel .cx-hero-copy {
+    max-width: 650px !important;
+}
+
+.cx-hero-carousel .cx-hero-copy h1,
+.cx-detail-copy h1 {
+    font-size: clamp(2rem, 4vw, 3.25rem) !important;
+    line-height: 1.02 !important;
+}
+
+.cx-hero-carousel .cx-hero-copy p,
+.cx-detail-copy p {
+    max-width: 640px !important;
+    font-size: clamp(.95rem, 1.5vw, 1.08rem) !important;
+    line-height: 1.55 !important;
+}
+
+.cx-hero-actions a,
+.cx-hero-actions button {
+    min-height: 40px !important;
+    padding: 9px 15px !important;
+    font-size: .95rem !important;
+}
+
+.cx-movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)) !important;
+    gap: 16px !important;
+}
+
+.cx-movie-card,
+.movie-card {
+    border-radius: 14px !important;
+}
+
+.cx-poster-link,
+.poster-box {
+    aspect-ratio: 2 / 3 !important;
+    max-height: 280px !important;
+    min-height: 0 !important;
+}
+
+.cx-poster-link img,
+.poster-box img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+.cx-card-body,
+.movie-info {
+    padding: 12px !important;
+}
+
+.cx-card-body h3,
+.movie-info h3 {
+    min-height: 0 !important;
+    font-size: 1rem !important;
+    line-height: 1.25 !important;
+}
+
+.cx-info-chips {
+    gap: 6px !important;
+}
+
+.cx-info-chips span,
+.cx-rating,
+.cx-chip,
+.eyebrow {
+    min-height: 24px !important;
+    padding: 5px 8px !important;
+    font-size: .76rem !important;
+}
+
+.cx-card-actions,
+.cx-release-actions {
+    gap: 7px !important;
+}
+
+.cx-card-actions a,
+.cx-release-actions a {
+    min-height: 34px !important;
+    padding: 7px 10px !important;
+    font-size: .84rem !important;
+}
+
+.cx-release-grid {
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)) !important;
+    gap: 16px !important;
+}
+
+.cx-release-card {
+    grid-template-columns: 118px minmax(0, 1fr) !important;
+    min-height: 0 !important;
+    border-radius: 14px !important;
+}
+
+.cx-release-poster {
+    min-height: 178px !important;
+}
+
+.cx-release-body {
+    padding: 13px !important;
+    gap: 10px !important;
+}
+
+.cx-release-body h3 {
+    min-height: 0 !important;
+    font-size: 1.04rem !important;
+    line-height: 1.25 !important;
+}
+
+.cx-release-meta {
+    gap: 6px !important;
+    font-size: .85rem !important;
+}
+
+.cx-detail-hero {
+    min-height: clamp(380px, 52vh, 520px) !important;
+}
+
+.cx-detail-content {
+    gap: clamp(18px, 3vw, 34px) !important;
+}
+
+.cx-detail-poster {
+    width: min(230px, 30vw) !important;
+}
+
+.cx-imdb-hero {
+    grid-template-columns: minmax(170px, 230px) 1fr !important;
+    padding: clamp(18px, 3vw, 34px) !important;
+    border-radius: 20px !important;
+}
+
+.cx-imdb-copy h1 {
+    font-size: clamp(1.9rem, 4vw, 3.4rem) !important;
+}
+
+.cx-dashboard-hero {
+    padding: clamp(20px, 3vw, 32px) !important;
+    border-radius: 18px !important;
+}
+
+.cx-dashboard-card {
+    min-height: 140px !important;
+    padding: 16px !important;
+    border-radius: 16px !important;
+}
+
+.cx-premiere-poster {
+    width: min(170px, 42vw) !important;
+}
+
+.cx-premiere-img {
+    max-height: 255px !important;
+}
+
+@media (max-width: 767.98px) {
+    .cx-hero-carousel,
+    .cx-hero-slide {
+        min-height: 360px !important;
+    }
+
+    .cx-release-card {
+        grid-template-columns: 96px minmax(0, 1fr) !important;
+    }
+
+    .cx-release-poster {
+        min-height: 148px !important;
+    }
+
+    .cx-detail-content,
+    .cx-imdb-hero {
+        grid-template-columns: 1fr !important;
+    }
+
+    .cx-detail-poster {
+        width: min(180px, 48vw) !important;
+    }
+}
+
 body {
     background:
         radial-gradient(circle at 10% -10%, rgba(107, 114, 128, .12), transparent 360px),
