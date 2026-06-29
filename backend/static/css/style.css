@@ -3390,6 +3390,206 @@ body {
     }
 }
 
+/* Final UI color usage map. Keep this last so the palette is consistent. */
+body[data-theme="dark"],
+body.theme-dark {
+    background: #0B0F19 !important;
+    color: #FFFFFF !important;
+}
+
+body[data-theme="dark"] .cine-navbar,
+body[data-theme="dark"] .cine-navbar.sticky-top,
+body[data-theme="dark"] .navbar.fixed-top,
+body[data-theme="dark"] .navbar.sticky-top,
+body.theme-dark .cine-navbar,
+body.theme-dark .cine-navbar.sticky-top,
+body.theme-dark .navbar.fixed-top,
+body.theme-dark .navbar.sticky-top {
+    background: #141A26 !important;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, .35) !important;
+}
+
+body[data-theme="dark"] .card,
+body[data-theme="dark"] .movie-card,
+body[data-theme="dark"] .quick-card,
+body[data-theme="dark"] .show-card,
+body[data-theme="dark"] .theater-card,
+body[data-theme="dark"] .trending-movie-card,
+body[data-theme="dark"] .cx-movie-card,
+body[data-theme="dark"] .cx-release-card,
+body[data-theme="dark"] .cx-theater-card,
+body[data-theme="dark"] .cx-plan-card,
+body[data-theme="dark"] .cx-dashboard-card,
+body[data-theme="dark"] .cx-detail-panel,
+body.theme-dark .card,
+body.theme-dark .movie-card,
+body.theme-dark .quick-card,
+body.theme-dark .show-card,
+body.theme-dark .theater-card,
+body.theme-dark .trending-movie-card,
+body.theme-dark .cx-movie-card,
+body.theme-dark .cx-release-card,
+body.theme-dark .cx-theater-card,
+body.theme-dark .cx-plan-card,
+body.theme-dark .cx-dashboard-card,
+body.theme-dark .cx-detail-panel {
+    background: #1D2433 !important;
+    border-color: #2A3448 !important;
+    color: #FFFFFF !important;
+}
+
+body[data-theme="dark"] h1,
+body[data-theme="dark"] h2,
+body[data-theme="dark"] h3,
+body[data-theme="dark"] h4,
+body[data-theme="dark"] h5,
+body[data-theme="dark"] h6,
+body[data-theme="dark"] strong,
+body[data-theme="dark"] .card-title,
+body[data-theme="dark"] .cx-card-body h3,
+body[data-theme="dark"] .cx-release-body h3,
+body[data-theme="dark"] .cx-theater-card h3,
+body.theme-dark h1,
+body.theme-dark h2,
+body.theme-dark h3,
+body.theme-dark h4,
+body.theme-dark h5,
+body.theme-dark h6,
+body.theme-dark strong,
+body.theme-dark .card-title,
+body.theme-dark .cx-card-body h3,
+body.theme-dark .cx-release-body h3,
+body.theme-dark .cx-theater-card h3 {
+    color: #FFFFFF !important;
+}
+
+body[data-theme="dark"] p,
+body[data-theme="dark"] small,
+body[data-theme="dark"] label,
+body[data-theme="dark"] .text-muted,
+body[data-theme="dark"] .cx-language,
+body[data-theme="dark"] .cx-card-body p,
+body[data-theme="dark"] .cx-release-body p,
+body[data-theme="dark"] .cx-dashboard-card span,
+body.theme-dark p,
+body.theme-dark small,
+body.theme-dark label,
+body.theme-dark .text-muted,
+body.theme-dark .cx-language,
+body.theme-dark .cx-card-body p,
+body.theme-dark .cx-release-body p,
+body.theme-dark .cx-dashboard-card span {
+    color: #A5B0C2 !important;
+}
+
+body[data-theme="dark"] .btn-primary,
+body[data-theme="dark"] .btn-danger,
+body[data-theme="dark"] .cine-btn,
+body[data-theme="dark"] .cx-card-actions a:first-child,
+body[data-theme="dark"] .cx-release-actions .btn-primary,
+body[data-theme="dark"] .cx-hero-actions .btn-primary,
+body.theme-dark .btn-primary,
+body.theme-dark .btn-danger,
+body.theme-dark .cine-btn,
+body.theme-dark .cx-card-actions a:first-child,
+body.theme-dark .cx-release-actions .btn-primary,
+body.theme-dark .cx-hero-actions .btn-primary {
+    background: #E50914 !important;
+    border-color: #E50914 !important;
+    color: #FFFFFF !important;
+}
+
+body[data-theme="dark"] .btn-primary:hover,
+body[data-theme="dark"] .btn-danger:hover,
+body[data-theme="dark"] .cine-btn:hover,
+body[data-theme="dark"] .cx-card-actions a:first-child:hover,
+body[data-theme="dark"] .cx-release-actions .btn-primary:hover,
+body[data-theme="dark"] .cx-hero-actions .btn-primary:hover,
+body.theme-dark .btn-primary:hover,
+body.theme-dark .btn-danger:hover,
+body.theme-dark .cine-btn:hover,
+body.theme-dark .cx-card-actions a:first-child:hover,
+body.theme-dark .cx-release-actions .btn-primary:hover,
+body.theme-dark .cx-hero-actions .btn-primary:hover {
+    background: #FF2D3B !important;
+    border-color: #FF2D3B !important;
+    color: #FFFFFF !important;
+}
+
+body[data-theme="dark"] .btn-warning,
+body[data-theme="dark"] .badge.bg-warning,
+body[data-theme="dark"] .cx-plan-card.is-pro::before,
+body.theme-dark .btn-warning,
+body.theme-dark .badge.bg-warning,
+body.theme-dark .cx-plan-card.is-pro::before {
+    background: #FFC857 !important;
+    border-color: #FFC857 !important;
+    color: #0B0F19 !important;
+}
+
+body[data-theme="dark"] .bg-success,
+body[data-theme="dark"] .alert-success,
+body.theme-dark .bg-success,
+body.theme-dark .alert-success {
+    background-color: #22C55E !important;
+    border-color: #22C55E !important;
+    color: #0B0F19 !important;
+}
+
+body[data-theme="dark"] .text-success,
+body.theme-dark .text-success {
+    color: #22C55E !important;
+}
+
+body[data-theme="dark"] .cx-rating,
+body[data-theme="dark"] .cx-release-rating,
+body[data-theme="dark"] .rating,
+body[data-theme="dark"] .fa-star,
+body.theme-dark .cx-rating,
+body.theme-dark .cx-release-rating,
+body.theme-dark .rating,
+body.theme-dark .fa-star {
+    color: #FFC857 !important;
+}
+
+body[data-theme="dark"] .cx-info-chips span,
+body[data-theme="dark"] .badge,
+body.theme-dark .cx-info-chips span,
+body.theme-dark .badge {
+    background: #141A26 !important;
+    border-color: #2A3448 !important;
+    color: #FFFFFF !important;
+}
+
+body[data-theme="dark"] .seat,
+body[data-theme="dark"] .seat-available,
+body[data-theme="dark"] label.btn-outline-success,
+body.theme-dark .seat,
+body.theme-dark .seat-available,
+body.theme-dark label.btn-outline-success {
+    background: #374151 !important;
+    border-color: #374151 !important;
+    color: #FFFFFF !important;
+}
+
+body[data-theme="dark"] input[name="selected_seats"]:checked + span,
+body[data-theme="dark"] label.btn-outline-success:has(input[name="selected_seats"]:checked),
+body.theme-dark input[name="selected_seats"]:checked + span,
+body.theme-dark label.btn-outline-success:has(input[name="selected_seats"]:checked) {
+    background: #E50914 !important;
+    border-color: #E50914 !important;
+    color: #FFFFFF !important;
+}
+
+body[data-theme="dark"] .seat-occupied,
+body[data-theme="dark"] .btn-danger:disabled,
+body.theme-dark .seat-occupied,
+body.theme-dark .btn-danger:disabled {
+    background: #6B7280 !important;
+    border-color: #6B7280 !important;
+    color: #FFFFFF !important;
+}
+
 body {
     background:
         radial-gradient(circle at 10% -10%, rgba(107, 114, 128, .12), transparent 360px),
