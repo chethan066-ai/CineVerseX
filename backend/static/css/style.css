@@ -3825,6 +3825,47 @@ body {
     --shadow: 0 22px 60px rgba(27, 36, 51, .14);
 }
 
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.theme-dark {
+    /* Backgrounds */
+    --page-bg: #0B0F19;
+    --surface: #141A26;
+    --surface-2: #1D2433;
+    --surface-strong: #1D2433;
+
+    /* Primary */
+    --brand: #E50914;
+    --brand-strong: #FF2D3B;
+    --primary: #E50914;
+    --primary-hover: #FF2D3B;
+    --primary-dark: #B20710;
+
+    /* Accent */
+    --accent: #FFC857;
+    --accent-hover: #FFD978;
+    --accent-soft: rgba(255, 200, 87, .12);
+
+    /* Text */
+    --ink: #FFFFFF;
+    --muted: #A5B0C2;
+    --text: #FFFFFF;
+    --text-muted: #A5B0C2;
+
+    /* Borders */
+    --line: #2A3448;
+    --border: #2A3448;
+
+    /* Status */
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --info: #3B82F6;
+
+    /* Shadows */
+    --shadow: 0 22px 60px rgba(0, 0, 0, .35);
+}
+
 html,
 body {
     width: 100%;
@@ -3842,9 +3883,18 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+body[data-theme="dark"],
+body.theme-dark {
+    background:
+        radial-gradient(circle at 10% -10%, rgba(229, 9, 20, .2), transparent 360px),
+        radial-gradient(circle at 90% 0%, rgba(255, 200, 87, .12), transparent 320px),
+        linear-gradient(180deg, #0B0F19, var(--page-bg) 360px) !important;
+    color: var(--ink) !important;
+}
+
 /* Hide old theme buttons if they still exist in base.html */
 .theme-switcher {
-    display: none !important;
+    display: inline-flex !important;
 }
 
 /* Navbar: stable, no overlap */
