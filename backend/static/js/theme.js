@@ -1,53 +1,71 @@
-(function () {
+(() => {
     "use strict";
 
-    const allowedThemes = ["white", "dark"];
-    const storageKey = "cineverse-theme";
-    const defaultTheme = "white";
+    const STORAGE_KEY = "cineverse-theme";
+    const DEFAULT_THEME = "white";
+    const THEMES = ["white", "dark"];
 
     function normalizeTheme(theme) {
-        return allowedThemes.includes(theme) ? theme : defaultTheme;
+        return THEMES.includes(theme) ? theme : DEFAULT_THEME;
     }
 
-    function getSavedTheme() {
-        return normalizeTheme(localStorage.getItem(storageKey));
+    function saveTheme(theme) {
+        localStorage.setItem(STORAGE_KEY, theme);
     }
 
-    function applyTheme(theme) {
-        const selectedTheme = normalizeTheme(theme);
+    function loadTheme() {
+        return normalizeTheme(localStorage.getItem(STORAGE_KEY));
+    }
 
-        document.documentElement.setAttribute("data-theme", selectedTheme);
-        document.body.setAttribute("data-theme", selectedTheme);
+    function updateButtons(theme) {
+        document.querySelectorAll("[data-theme-choice]").forEach(button => {
+            const active = button.dataset.themeChoice === theme;
 
-        document.body.classList.toggle("theme-dark", selectedTheme === "dark");
-        document.body.classList.toggle("theme-white", selectedTheme === "white");
-
-        localStorage.setItem(storageKey, selectedTheme);
-
-        document.querySelectorAll("[data-theme-choice]").forEach(function (button) {
-            const isActive = button.getAttribute("data-theme-choice") === selectedTheme;
-
-            button.classList.toggle("is-active", isActive);
-            button.setAttribute("aria-pressed", isActive ? "true" : "false");
+            button.classList.toggle("is-active", active);
+            button.setAttribute("aria-pressed", active);
         });
     }
 
-    function bindThemeButtons() {
-        document.querySelectorAll("[data-theme-choice]").forEach(function (button) {
-            button.addEventListener("click", function () {
-                const theme = button.getAttribute("data-theme-choice");
-                applyTheme(theme);
-            });
+    function applyTheme(theme) {
+        theme = normalizeTheme(theme);
+
+        document.documentElement.setAttribute("data-theme", theme);
+        document.body.setAttribute("data-theme", theme);
+
+        document.documentElement.classList.toggle("theme-dark", theme === "dark");
+        document.documentElement.classList.toggle("theme-white", theme === "white");
+
+        document.body.classList.toggle("theme-dark", theme === "dark");
+        document.body.classList.toggle("theme-white", theme === "white");
+
+        saveTheme(theme);
+        updateButtons(theme);
+    }
+
+    function bindButtons() {
+        document.querySelectorAll("[data-theme-choice]").forEach(button => {
+
+            button.removeEventListener("click", button.__themeHandler);
+
+            button.__themeHandler = function () {
+                applyTheme(button.dataset.themeChoice);
+            };
+
+            button.addEventListener("click", button.__themeHandler);
         });
     }
 
     window.CineVerseTheme = {
         apply: applyTheme,
-        current: getSavedTheme
+        current: loadTheme,
+        toggle() {
+            applyTheme(loadTheme() === "dark" ? "white" : "dark");
+        }
     };
 
-    document.addEventListener("DOMContentLoaded", function () {
-        applyTheme(getSavedTheme());
-        bindThemeButtons();
+    document.addEventListener("DOMContentLoaded", () => {
+        applyTheme(loadTheme());
+        bindButtons();
     });
-}());
+
+})();
