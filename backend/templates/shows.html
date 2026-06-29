@@ -91,10 +91,6 @@
                     </div>
                 </div>
 
-                <div class="cx-release-meta">
-                    <span><i class="fas fa-language"></i> {{ movie.language or "Language not set" }}</span>
-                </div>
-
                 <div class="cx-release-actions">
                     <a href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}" class="btn btn-outline-warning">
                         Details
