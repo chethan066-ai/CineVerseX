@@ -3895,3 +3895,60 @@ body[data-theme="grey"] {
     border-color: #4b5563 !important;
     color: #ffffff !important;
 }
+
+/* Visibility fixes for the White/Grey themes. */
+body[data-theme="white"] .cine-navbar,
+body[data-theme="grey"] .cine-navbar {
+    background: color-mix(in srgb, var(--surface) 96%, white) !important;
+    color: var(--ink) !important;
+}
+
+body[data-theme="white"] .cine-logo,
+body[data-theme="grey"] .cine-logo,
+body[data-theme="white"] .cine-navbar .nav-link,
+body[data-theme="grey"] .cine-navbar .nav-link,
+body[data-theme="white"] .cine-navbar .navbar-toggler,
+body[data-theme="grey"] .cine-navbar .navbar-toggler,
+body[data-theme="white"] .cx-nav-actions .btn,
+body[data-theme="grey"] .cx-nav-actions .btn {
+    color: var(--ink) !important;
+    opacity: 1 !important;
+}
+
+body[data-theme="white"] .cine-navbar .navbar-toggler,
+body[data-theme="grey"] .cine-navbar .navbar-toggler {
+    border-color: var(--line) !important;
+    background: var(--surface-2) !important;
+}
+
+body[data-theme="white"] .cx-hero-carousel,
+body[data-theme="grey"] .cx-hero-carousel,
+body[data-theme="white"] .cx-detail-hero,
+body[data-theme="grey"] .cx-detail-hero {
+    background: var(--surface-2) !important;
+}
+
+body[data-theme="white"] .cx-hero-shade,
+body[data-theme="white"] .cx-detail-shade {
+    background: linear-gradient(90deg, rgba(255, 255, 255, .88), rgba(255, 255, 255, .58), rgba(255, 255, 255, .18)) !important;
+}
+
+body[data-theme="grey"] .cx-hero-shade,
+body[data-theme="grey"] .cx-detail-shade {
+    background: linear-gradient(90deg, rgba(247, 248, 250, .9), rgba(247, 248, 250, .62), rgba(247, 248, 250, .24)) !important;
+}
+
+body[data-theme="white"] .cx-hero-backdrop,
+body[data-theme="white"] .cx-detail-backdrop,
+body[data-theme="grey"] .cx-hero-backdrop,
+body[data-theme="grey"] .cx-detail-backdrop {
+    opacity: .72 !important;
+    filter: grayscale(.05) contrast(1.05) saturate(.85) !important;
+}
+
+body[data-theme="white"] .cx-hero-carousel .cx-hero-copy,
+body[data-theme="grey"] .cx-hero-carousel .cx-hero-copy,
+body[data-theme="white"] .cx-detail-copy,
+body[data-theme="grey"] .cx-detail-copy {
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .7) !important;
+}
