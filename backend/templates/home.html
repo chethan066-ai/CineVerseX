@@ -6,7 +6,7 @@
 
     <section class="cx-hero-carousel" data-hero-carousel>
         {% for movie in hero_movies[:5] %}
-        {% set fallback_poster = url_for('generated_movie_poster', movie_id=movie.id) %}
+        {% set fallback_poster = url_for('static', filename='images/no-poster.svg') %}
         {% set hero_backdrop = movie.backdrop_url if movie.backdrop_url and movie.backdrop_url.startswith('http') else (movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else fallback_poster) %}
         <article class="cx-hero-slide {% if loop.first %}is-active{% endif %}" data-hero-slide>
             <img
@@ -44,11 +44,6 @@
                     </a>
                     {% endif %}
 
-                    {% if movie.release_date and movie.release_date >= today_key %}
-                    <a href="{{ bookmyshow_movie_url(movie) }}" class="btn btn-outline-warning btn-lg" target="_blank" rel="noopener noreferrer">
-                        <i class="fas fa-ticket-alt"></i> Book Now
-                    </a>
-                    {% endif %}
                 </div>
             </div>
         </article>
@@ -79,7 +74,7 @@
     <section class="cx-release-intro">
         <div>
             <span class="eyebrow">Movies</span>
-            <h2>Discover curated cinema picks, multi-language titles and BookMyShow-ready movie pages.</h2>
+            <h2>Discover curated cinema picks, multi-language titles and rich movie detail pages.</h2>
         </div>
         <div class="cx-release-metrics">
             <span><i class="fas fa-film"></i> {{ "{:,}".format(movie_count) }} Movies</span>
@@ -151,30 +146,76 @@
         </div>
     </section>
 
-    <section class="cx-section cx-rail-section">
+    <section class="cx-section cx-rail-section cx-upcoming-section">
         <div class="cx-section-head">
             <div>
                 <span class="eyebrow">Coming soon</span>
                 <h2>Movies on the radar</h2>
             </div>
-            <a href="{{ url_for('show_bp.shows') }}" class="cx-see-all">
+            <a href="{{ url_for('movie_bp.movies', view='upcoming', sort='newest') }}" class="cx-see-all">
                 See All
             </a>
         </div>
 
-        <div class="cx-poster-rail">
+        <div class="cx-upcoming-grid cx-home-upcoming-grid">
             {% for movie in featured_movies %}
-            <a class="cx-premiere-poster" href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}">
-                <span class="cx-premiere-img">
+            <article class="cx-upcoming-card">
+                <a
+                    class="cx-upcoming-poster"
+                    href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}"
+                    data-track-movie
+                    data-title="{{ movie.title }}"
+                    data-url="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}"
+                    data-poster="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('static', filename='images/no-poster.svg')) }}">
                     <img
-                        src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('generated_movie_poster', movie_id=movie.id)) }}"
-                        onerror="this.src='{{ url_for('generated_movie_poster', movie_id=movie.id) }}';"
-                        alt="">
-                    <span class="cx-premiere-ribbon">Soon</span>
-                </span>
-                <strong>{{ movie.title }}</strong>
-                <small>{{ movie.release_date or "Coming soon" }} / {{ movie.language.split(",")[0] if movie.language else "Movie" }}</small>
-            </a>
+                        src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('static', filename='images/no-poster.svg')) }}"
+                        onerror="this.src='{{ url_for('static', filename='images/no-poster.svg') }}';"
+                        alt="{{ movie.title }}">
+                </a>
+
+                <div class="cx-upcoming-main">
+                    <div class="cx-upcoming-kicker">
+                        {% if movie.interested_count and movie.interested_count > 0 %}
+                        <span><i class="fas fa-star"></i> {{ "{:,}".format(movie.interested_count) }} interested</span>
+                        {% endif %}
+                        {% if movie.interested_count and movie.interested_count >= 1000 %}
+                        <span class="cx-trending-badge"><i class="fas fa-fire"></i> Trending</span>
+                        {% endif %}
+                    </div>
+                    <h3>{{ movie.title }}</h3>
+                    <div class="cx-upcoming-tags">
+                        {% for genre in (movie.genre or "").split(",")[:3] %}
+                        {% if genre.strip() %}<span>{{ genre.strip() }}</span>{% endif %}
+                        {% endfor %}
+                        <span>{{ movie.language.split(",")[0] if movie.language else "Movie" }}</span>
+                        <span class="cx-cert-badge">{{ movie.certificate or "UA" }}</span>
+                    </div>
+                </div>
+
+                <div class="cx-upcoming-actions">
+                    <a class="cx-upcoming-details" href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}">
+                        <i class="fas fa-circle-info"></i>
+                        Details
+                    </a>
+                    <a
+                        class="cx-upcoming-trailer"
+                        href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) ~ '#trailer' if movie.trailer_url else 'https://www.youtube.com/results?search_query=' ~ ((movie.title ~ ' trailer')|urlencode|replace('%20', '+')) }}"
+                        {% if not movie.trailer_url %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                        <i class="fas fa-play"></i>
+                        Trailer
+                    </a>
+                    <button
+                        class="cx-upcoming-notify"
+                        type="button"
+                        data-watch-label="Notify Me"
+                        data-watch-title="{{ movie.title }}"
+                        data-watch-url="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}"
+                        data-watch-poster="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('static', filename='images/no-poster.svg')) }}">
+                        <i class="far fa-bell"></i>
+                        <span>Notify Me</span>
+                    </button>
+                </div>
+            </article>
             {% else %}
             <div class="alert alert-info">Movie picks will appear here after sync.</div>
             {% endfor %}
@@ -184,8 +225,8 @@
     <section class="cx-section cx-feature-strip">
         <a href="{{ url_for('show_bp.shows') }}">
             <i class="fas fa-star"></i>
-            <span>BookMyShow Picks</span>
-            <strong>Start with curated movies that open booking search quickly.</strong>
+            <span>Movie Picks</span>
+            <strong>Start with curated movies, trailers, details, and saved picks.</strong>
         </a>
         <a href="{{ url_for('movie_bp.movies', genre='Animation', view='') }}">
             <i class="fas fa-child-reaching"></i>
@@ -215,8 +256,8 @@
             <a class="cx-premiere-poster" href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}">
                 <span class="cx-premiere-img">
                     <img
-                        src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('generated_movie_poster', movie_id=movie.id)) }}"
-                        onerror="this.src='{{ url_for('generated_movie_poster', movie_id=movie.id) }}';"
+                        src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('static', filename='images/no-poster.svg')) }}"
+                        onerror="this.src='{{ url_for('static', filename='images/no-poster.svg') }}';"
                         alt="">
                     <span class="cx-premiere-ribbon">Pick</span>
                 </span>
@@ -245,8 +286,8 @@
             <a class="cx-premiere-poster" href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}">
                 <span class="cx-premiere-img">
                     <img
-                        src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('generated_movie_poster', movie_id=movie.id)) }}"
-                        onerror="this.src='{{ url_for('generated_movie_poster', movie_id=movie.id) }}';"
+                        src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('static', filename='images/no-poster.svg')) }}"
+                        onerror="this.src='{{ url_for('static', filename='images/no-poster.svg') }}';"
                         alt="">
                     <span class="cx-premiere-ribbon">Explore</span>
                 </span>
@@ -287,8 +328,8 @@
         </a>
         <a href="{{ url_for('show_bp.shows') }}">
             <i class="fas fa-calendar-days"></i>
-            <strong>BookMyShow Movies</strong>
-            <span>Curated titles with BookMyShow access</span>
+            <strong>Movie Library</strong>
+            <span>Curated titles with details, posters, and trailers</span>
         </a>
         <a href="{{ url_for('theater_bp.theaters') }}">
             <i class="fas fa-building"></i>
@@ -298,7 +339,7 @@
         <a href="{{ url_for('booking_bp.booking_history') }}">
             <i class="fas fa-arrow-up-right-from-square"></i>
             <strong>Booking Links</strong>
-            <span>Open BookMyShow and keep useful link history</span>
+            <span>Open movie details and keep useful link history</span>
         </a>
         <a href="{{ url_for('movie_bp.movies', view='', sort='popular') }}">
             <i class="fas fa-star"></i>

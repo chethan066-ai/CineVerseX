@@ -59,48 +59,43 @@
         {% endif %}
     </form>
 
-    <div class="cx-release-grid">
+    <div class="cx-movie-grid">
         {% for card in movie_cards %}
         {% set movie = card.movie %}
-        <article class="cx-release-card">
-            <a class="cx-release-poster" href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}">
+        <article class="cx-movie-card">
+            <a
+                class="cx-poster-link"
+                href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}"
+                data-track-movie
+                data-title="{{ movie.title }}"
+                data-url="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}"
+                data-poster="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('static', filename='images/no-poster.svg')) }}">
                 <img
-                    src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('generated_movie_poster', movie_id=movie.id)) }}"
-                    onerror="this.src='{{ url_for('generated_movie_poster', movie_id=movie.id) }}';"
+                    src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('static', filename='images/no-poster.svg')) }}"
+                    onerror="this.src='{{ url_for('static', filename='images/no-poster.svg') }}';"
                     alt="{{ movie.title }}">
                 <span class="cx-hover-overlay">
-                    <span>Details</span>
+                    <span>View Details</span>
                 </span>
             </a>
 
-            <div class="cx-release-body">
-                <div>
-                    <small>{{ movie.release_date or "Coming soon" }}</small>
-                    <h3>{{ movie.title }}</h3>
-                    <div class="cx-info-chips">
-                        {% for genre in (movie.genre or "").split(",")[:2] %}
-                        {% if genre.strip() %}<span>{{ genre.strip() }}</span>{% endif %}
-                        {% endfor %}
-                        <span>{{ movie.language.split(",")[0] if movie.language else "Movie" }}</span>
-                        {% if movie.runtime_minutes %}<span>{{ movie.runtime_minutes // 60 }}h {{ movie.runtime_minutes % 60 }}m</span>{% endif %}
-                        <span>{{ movie.certificate or "UA" }}</span>
-                    </div>
+            <div class="cx-card-body">
+                <h3>{{ movie.title }}</h3>
+                <div class="cx-info-chips">
+                    {% for genre in (movie.genre or "").split(",")[:2] %}
+                    {% if genre.strip() %}<span>{{ genre.strip() }}</span>{% endif %}
+                    {% endfor %}
+                    <span>{{ movie.language.split(",")[0] if movie.language else "Movie" }}</span>
+                    {% if movie.runtime_minutes %}<span>{{ movie.runtime_minutes // 60 }}h {{ movie.runtime_minutes % 60 }}m</span>{% endif %}
+                    <span>{{ movie.certificate or "UA" }}</span>
                 </div>
+                <p class="cx-language">{{ movie.release_date or "Coming soon" }}</p>
 
-                <div class="cx-release-actions">
-                    <a href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}" class="btn btn-outline-warning">
-                        Details
-                    </a>
-                    <a
-                        href="{{ bookmyshow_movie_url(movie) }}"
-                        class="btn btn-primary"
-                        target="_blank"
-                        rel="noopener noreferrer">
-                        BookMyShow
-                    </a>
+                <div class="cx-card-actions">
+                    <a href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}">Details</a>
+                    <a href="https://in.bookmyshow.com/" target="_blank" rel="noopener noreferrer">Search on BookMyShow</a>
                     <a
                         href="{{ movie.justwatch_url or 'https://www.justwatch.com/in/search?q=' ~ movie.title|urlencode }}"
-                        class="btn btn-outline-warning"
                         target="_blank"
                         rel="noopener noreferrer">
                         JustWatch

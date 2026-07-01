@@ -11,7 +11,7 @@
                 {% if session.get('user_role') == 'admin' %}
                     CineVerse picks and local IMDb database matches in one place.
                 {% else %}
-                    CineVerse picks, trailers, watch options, and BookMyShow movie links.
+                    CineVerse picks, trailers, watch options, and movie details.
                 {% endif %}
             </p>
         </div>
@@ -65,10 +65,10 @@
                 data-track-movie
                 data-title="{{ movie.title }}"
                 data-url="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}"
-                data-poster="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('generated_movie_poster', movie_id=movie.id)) }}">
+                data-poster="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('static', filename='images/no-poster.svg')) }}">
                 <img
-                    src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('generated_movie_poster', movie_id=movie.id)) }}"
-                    onerror="this.src='{{ url_for('generated_movie_poster', movie_id=movie.id) }}';"
+                    src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('static', filename='images/no-poster.svg')) }}"
+                    onerror="this.src='{{ url_for('static', filename='images/no-poster.svg') }}';"
                     alt="{{ movie.title }}">
                 {% if session.get("user_id") %}
                 <button
@@ -76,7 +76,7 @@
                     type="button"
                     data-watch-title="{{ movie.title }}"
                     data-watch-url="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}"
-                    data-watch-poster="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('generated_movie_poster', movie_id=movie.id)) }}"
+                    data-watch-poster="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('static', filename='images/no-poster.svg')) }}"
                     aria-label="Add {{ movie.title }} to watchlist">
                     <i class="far fa-heart"></i>
                 </button>
@@ -95,9 +95,6 @@
                 <div class="cx-card-actions">
                     <a href="{{ url_for('movie_bp.movie_details', movie_id=movie.id) }}">Details</a>
                     <a href="{{ movie.justwatch_url or 'https://www.justwatch.com/in/search?q=' ~ movie.title|urlencode }}" target="_blank" rel="noopener noreferrer">JustWatch</a>
-                    {% if movie.release_date and movie.release_date >= today_key %}
-                    <a href="{{ bookmyshow_movie_url(movie) }}" target="_blank" rel="noopener noreferrer">BookMyShow</a>
-                    {% endif %}
                 </div>
             </div>
         </article>
@@ -142,9 +139,6 @@
                 <div class="cx-card-actions">
                     <a href="{{ url_for('movie_bp.imdb_movie_details', tconst=movie.tconst) }}">Details</a>
                     <a href="https://www.imdb.com/title/{{ movie.tconst }}/" target="_blank" rel="noopener noreferrer">IMDb</a>
-                    {% if movie.startYear and movie.startYear|int >= current_year %}
-                    <a href="{{ bookmyshow_url_for_title(movie.primaryTitle) }}" target="_blank" rel="noopener noreferrer">BookMyShow</a>
-                    {% endif %}
                     <a href="https://www.justwatch.com/in/search?q={{ movie.primaryTitle|urlencode }}" target="_blank" rel="noopener noreferrer">JustWatch</a>
                 </div>
             </div>

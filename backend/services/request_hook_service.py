@@ -46,6 +46,8 @@ def require_login_for_member_features():
         "movie_bp.movies",
         "movie_bp.search_movies",
         "movie_bp.movie_details",
+        "movie_bp.bookmyshow_movie_redirect",
+        "movie_bp.bookmyshow_title_redirect",
         "movie_bp.imdb_movie_details",
         "movie_bp.imdb_poster",
         "api_bp.movies",

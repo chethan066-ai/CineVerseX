@@ -55,16 +55,21 @@ def bookmyshow_search_url(title):
     )
 
 
+def bookmyshow_direct_url(title):
+    return BOOKMYSHOW_MOVIE_PAGES.get(normalize_title_key(title), "")
+
+
 def normalize_bookmyshow_movie_url(url):
     cleaned_url = (url or "").strip()
     return cleaned_url or BOOKMYSHOW_HOME_URL
 
 
 def bookmyshow_links_for_title(title):
-    direct_url = bookmyshow_search_url(title)
+    direct_url = bookmyshow_direct_url(title)
+    fallback_url = bookmyshow_search_url(title)
     return {
-        "movie": direct_url,
-        "ticket": direct_url if direct_url != BOOKMYSHOW_HOME_URL else "",
+        "movie": direct_url or fallback_url,
+        "ticket": direct_url or "",
         "primary": direct_url,
     }
 

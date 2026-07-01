@@ -19,7 +19,7 @@ from models.review import Review
 from models.show import Show
 from models.theater import Theater
 from services.activity_service import log_activity
-from services.catalog_data import BOOKMYSHOW_HOME_URL, BOOKMYSHOW_MOVIE_PAGES
+from services.catalog_data import BOOKMYSHOW_HOME_URL, BOOKMYSHOW_MOVIE_PAGES, FEATURED_MOVIE_DETAILS
 
 movie_bp = Blueprint("movie_bp", __name__)
 
@@ -133,6 +133,15 @@ def bookmyshow_search_url(title):
         normalize_title_key(title),
         f"{BOOKMYSHOW_HOME_URL}search?q={quote_plus(title)}"
     )
+
+
+def bookmyshow_direct_url(title):
+    return BOOKMYSHOW_MOVIE_PAGES.get(normalize_title_key(title), "")
+
+
+def known_release_date_for_title(title):
+    details = FEATURED_MOVIE_DETAILS.get(title or "", {})
+    return details.get("release_date", "")
 
 
 def justwatch_search_url(title):
@@ -524,9 +533,10 @@ def import_movie_from_external_sources(query):
     existing_movie.tmdb_id = tmdb_match.get("tmdb_id") or existing_movie.tmdb_id
     existing_movie.tmdb_url = f"https://www.imdb.com/title/{imdb_row['tconst']}/"
     existing_movie.justwatch_url = justwatch_search_url(title)
-    existing_movie.bookmyshow_url = bookmyshow_search_url(title)
-    existing_movie.bookmyshow_movie_url = existing_movie.bookmyshow_url
-    existing_movie.bookmyshow_ticket_url = existing_movie.bookmyshow_url
+    direct_bookmyshow_url = bookmyshow_direct_url(title)
+    existing_movie.bookmyshow_url = direct_bookmyshow_url
+    existing_movie.bookmyshow_movie_url = direct_bookmyshow_url or bookmyshow_search_url(title)
+    existing_movie.bookmyshow_ticket_url = direct_bookmyshow_url
     existing_movie.data_source = "imported"
 
     if poster_url:
@@ -635,7 +645,13 @@ def fetch_imdb_movies(genre="", view="", sort="popular", page=1, limit=80):
             continue
 
         seen_titles.add(title_key)
-        movies.append(dict(row))
+        movie = dict(row)
+        movie["release_date"] = known_release_date_for_title(movie.get("primaryTitle"))
+        if view == "upcoming" and movie["release_date"] and movie["release_date"] < datetime.utcnow().strftime("%Y-%m-%d"):
+            continue
+        if view == "now-showing" and movie["release_date"] and movie["release_date"] > datetime.utcnow().strftime("%Y-%m-%d"):
+            continue
+        movies.append(movie)
 
         if len(movies) >= limit:
             break
@@ -770,6 +786,7 @@ def search_imdb_movies(query, limit=24, genre="", year="", min_rating=""):
         cached_image = image_cache.get(movie["tconst"], {})
         movie["poster_url"] = cached_image.get("poster_url", "")
         movie["backdrop_url"] = cached_image.get("backdrop_url", "")
+        movie["release_date"] = known_release_date_for_title(movie.get("primaryTitle"))
 
     return rows
 
@@ -807,11 +824,24 @@ def imdb_poster(tconst):
     return Response(svg, mimetype="image/svg+xml")
 
 
+@movie_bp.route("/bookmyshow/movie/<int:movie_id>")
+def bookmyshow_movie_redirect(movie_id):
+    movie = Movie.query.get_or_404(movie_id)
+    return redirect(movie.bookmyshow_url or bookmyshow_search_url(movie.title))
+
+
+@movie_bp.route("/bookmyshow/search")
+def bookmyshow_title_redirect():
+    title = request.args.get("title", "").strip()
+    return redirect(bookmyshow_search_url(title))
+
+
 @movie_bp.route("/movies")
 def movies():
     selected_genre = request.args.get("genre", "")
     selected_view = request.args.get("view", "upcoming")
     selected_sort = request.args.get("sort", "popular")
+    selected_month = request.args.get("month", "")
     is_admin = current_user.is_authenticated and getattr(current_user, "role", "") == "admin"
     selected_source = request.args.get("source") or ("imdb" if is_admin and imdb_db_available() else "local")
     if selected_source == "imdb" and not is_admin:
@@ -839,6 +869,8 @@ def movies():
                 selected_genre=selected_genre,
                 selected_view=selected_view,
                 selected_sort=selected_sort,
+                selected_month=selected_month,
+                release_months=[],
                 selected_source=selected_source,
                 selected_page=selected_page,
                 movie_source="imdb",
@@ -856,6 +888,8 @@ def movies():
             selected_genre=selected_genre,
             selected_view=selected_view,
             selected_sort=selected_sort,
+            selected_month=selected_month,
+            release_months=[],
             selected_source=selected_source,
             selected_page=selected_page,
             movie_source="imdb",
@@ -870,10 +904,21 @@ def movies():
         )
 
     local_query = Movie.query.filter(Movie.data_source.in_(("tmdb", "imdbapi", "curated")))
+    release_month_rows = (
+        db.session.query(func.substr(Movie.release_date, 1, 7))
+        .filter(Movie.data_source.in_(("tmdb", "imdbapi", "curated")))
+        .filter(Movie.release_date.isnot(None), Movie.release_date != "")
+        .distinct()
+        .order_by(func.substr(Movie.release_date, 1, 7).asc())
+        .all()
+    )
+    release_months = [row[0] for row in release_month_rows if row[0]]
 
     if local_query.count() > 0:
         if selected_genre:
             local_query = local_query.filter(Movie.genre.ilike(f"%{selected_genre}%"))
+        if selected_month:
+            local_query = local_query.filter(Movie.release_date.startswith(selected_month))
 
         if selected_view == "now-showing":
             local_query = local_query.filter(Movie.release_date <= today_key)
@@ -907,6 +952,8 @@ def movies():
             selected_genre=selected_genre,
             selected_view=selected_view,
             selected_sort=selected_sort,
+            selected_month=selected_month,
+            release_months=release_months,
             selected_source=selected_source,
             selected_page=selected_page,
             movie_source="local",
@@ -927,6 +974,8 @@ def movies():
             selected_genre=selected_genre,
             selected_view=selected_view,
             selected_sort=selected_sort,
+            selected_month=selected_month,
+            release_months=[],
             selected_source="imdb",
             selected_page=selected_page,
             movie_source="imdb",
@@ -943,8 +992,10 @@ def movies():
         genres=GENRES,
         selected_genre=selected_genre,
         selected_view=selected_view,
-        selected_sort=selected_sort,
-        selected_source="local",
+            selected_sort=selected_sort,
+            selected_month=selected_month,
+            release_months=release_months,
+            selected_source="local",
         selected_page=selected_page,
         movie_source="local",
         is_admin=is_admin,
@@ -972,7 +1023,7 @@ def imdb_movie_details(tconst):
     return render_template(
         "imdb_movie_details.html",
         movie=movie,
-        bookmyshow_url=bookmyshow_search_url(movie["primaryTitle"]),
+        bookmyshow_url=f"{BOOKMYSHOW_HOME_URL}search?q={quote_plus(movie['primaryTitle'])}",
         justwatch_url=justwatch_search_url(movie["primaryTitle"])
     )
 
@@ -1037,9 +1088,13 @@ def add_movie():
         genre = request.form.get("genre", "").strip()
         release_date = request.form["release_date"].strip()
         rating = float(request.form["rating"] or 0)
+        interested_count = int(request.form.get("interested_count") or 0)
+        release_status = (request.form.get("release_status") or "Coming Soon").strip()
         trailer_url = normalize_youtube_embed_url(request.form.get("trailer_url"))
         justwatch_url = (request.form.get("justwatch_url") or "").strip()
         bookmyshow_url = (request.form.get("bookmyshow_url") or "").strip()
+        poster_url = (request.form.get("poster_url") or "").strip()
+        backdrop_url = (request.form.get("backdrop_url") or "").strip()
 
         existing_movie = Movie.query.filter_by(title=title).first()
 
@@ -1047,7 +1102,6 @@ def add_movie():
             return "Movie already exists"
 
         poster_file = request.files.get("poster")
-        poster_url = ""
 
         if poster_file and poster_file.filename:
             if not allowed_file(poster_file.filename):
@@ -1083,13 +1137,16 @@ def add_movie():
             genre=genre,
             release_date=release_date,
             rating=rating,
+            interested_count=interested_count,
+            release_status=release_status,
             trailer_url=trailer_url,
             justwatch_url=justwatch_url,
-            bookmyshow_url=bookmyshow_url
+            bookmyshow_url=bookmyshow_url,
+            backdrop_url=backdrop_url or poster_url
         )
 
         if not movie.poster_url:
-            return "Please upload a poster image"
+            return "Please add a poster image URL or upload a poster image"
 
         db.session.add(movie)
         db.session.commit()
@@ -1263,6 +1320,10 @@ def edit_movie(movie_id):
         movie.genre = request.form.get("genre", "").strip()
         movie.release_date = request.form["release_date"]
         movie.rating = float(request.form["rating"])
+        movie.poster_url = (request.form.get("poster_url") or "").strip()
+        movie.backdrop_url = (request.form.get("backdrop_url") or "").strip()
+        movie.interested_count = int(request.form.get("interested_count") or 0)
+        movie.release_status = (request.form.get("release_status") or "Coming Soon").strip()
         movie.trailer_url = normalize_youtube_embed_url(request.form.get("trailer_url"))
         movie.justwatch_url = (request.form.get("justwatch_url") or "").strip()
         movie.bookmyshow_url = (request.form.get("bookmyshow_url") or "").strip()

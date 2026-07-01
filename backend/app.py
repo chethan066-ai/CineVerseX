@@ -4,7 +4,7 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, url_for
 from flask_login import LoginManager
 from dotenv import load_dotenv
 
@@ -132,6 +132,11 @@ def inject_system_settings():
 
     def effective_bookmyshow_movie_url(movie):
         title = getattr(movie, "title", "") or getattr(movie, "primaryTitle", "")
+        stored_url = getattr(movie, "bookmyshow_url", "") or ""
+
+        return stored_url or bookmyshow_search_url(title)
+
+    def bookmyshow_search_url_for_title(title):
         return bookmyshow_search_url(title)
 
     return {
@@ -140,7 +145,9 @@ def inject_system_settings():
         "today_key": today.strftime("%Y-%m-%d"),
         "current_year": today.year,
         "bookmyshow_url_for_title": bookmyshow_search_url,
+        "bookmyshow_redirect_for_title": lambda title: url_for("movie_bp.bookmyshow_title_redirect", title=title),
         "bookmyshow_movie_url": effective_bookmyshow_movie_url,
+        "bookmyshow_search_url_for_title": bookmyshow_search_url_for_title,
     }
 
 

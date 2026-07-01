@@ -51,6 +51,40 @@
             class="form-control mb-3"
         >
 
+        <label class="form-label">Poster URL</label>
+        <input
+            type="url"
+            name="poster_url"
+            value="{{ movie.poster_url or '' }}"
+            class="form-control mb-3"
+            placeholder="https://image.example/poster.jpg">
+
+        <label class="form-label">Backdrop URL</label>
+        <input
+            type="url"
+            name="backdrop_url"
+            value="{{ movie.backdrop_url or '' }}"
+            class="form-control mb-3"
+            placeholder="https://image.example/backdrop.jpg">
+
+        <label class="form-label">Interested Count</label>
+        <input
+            type="number"
+            min="0"
+            step="1"
+            name="interested_count"
+            value="{{ movie.interested_count or 0 }}"
+            class="form-control mb-3">
+
+        <label class="form-label">Release Status</label>
+        <select name="release_status" class="form-control mb-3">
+            {% for status in ["Coming Soon", "Now Showing", "Released"] %}
+            <option value="{{ status }}" {% if (movie.release_status or "Coming Soon") == status %}selected{% endif %}>
+                {{ status }}
+            </option>
+            {% endfor %}
+        </select>
+
         <label class="form-label">YouTube Trailer URL</label>
         <input
             type="url"

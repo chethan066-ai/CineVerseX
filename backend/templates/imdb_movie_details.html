@@ -53,16 +53,6 @@
                     <i class="fas fa-star"></i> IMDb
                 </a>
 
-                {% if year and year >= current_year %}
-                <a
-                    href="{{ bookmyshow_url }}"
-                    class="btn btn-outline-dark btn-lg"
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    <i class="fas fa-ticket-alt"></i> BookMyShow
-                </a>
-                {% endif %}
-
                 <a
                     href="{{ justwatch_url }}"
                     class="btn btn-outline-dark btn-lg"
@@ -99,8 +89,7 @@
             <h2>Movie intelligence</h2>
             <p>
                 CineVerse uses this IMDb record to power search, sorting, recommendations,
-                poster lookup, and external discovery. For older titles, BookMyShow is hidden
-                so the page stays focused on useful details instead of dead booking links.
+                poster lookup, and external discovery while staying focused on useful movie details.
             </p>
         </article>
 

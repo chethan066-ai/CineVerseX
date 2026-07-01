@@ -69,7 +69,7 @@ def effective_bookmyshow_url(movie):
     if not movie:
         return BOOKMYSHOW_HOME_URL
 
-    return bookmyshow_search_url(movie.title)
+    return movie.bookmyshow_url or bookmyshow_search_url(movie.title)
 
 
 def send_ticket_email(booking, ticket):

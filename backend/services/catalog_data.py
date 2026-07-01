@@ -4,6 +4,8 @@ TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 IMDBAPI_BASE_URL = "https://api.imdbapi.dev"
 BOOKMYSHOW_HOME_URL = "https://in.bookmyshow.com/"
 BOOKMYSHOW_MOVIE_PAGES = {
+    "minions & monsters": "https://in.bookmyshow.com/movies/minions-monsters/ET00487783",
+    "minions monsters": "https://in.bookmyshow.com/movies/minions-monsters/ET00487783",
     "spider man: brand new day": "https://in.bookmyshow.com/movies/bengaluru/spiderman-brand-new-day/ET00447840",
     "spiderman brand new day": "https://in.bookmyshow.com/movies/bengaluru/spiderman-brand-new-day/ET00447840",
 }

@@ -6,16 +6,16 @@
     <section class="cx-detail-hero">
         <img
             class="cx-detail-backdrop"
-            src="{{ movie.backdrop_url if movie.backdrop_url and movie.backdrop_url.startswith('http') else (movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else url_for('generated_movie_poster', movie_id=movie.id)) }}"
-            onerror="this.src='{{ url_for('generated_movie_poster', movie_id=movie.id) }}';"
+            src="{{ movie.backdrop_url if movie.backdrop_url and movie.backdrop_url.startswith('http') else (movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else url_for('static', filename='images/no-poster.svg')) }}"
+            onerror="this.src='{{ url_for('static', filename='images/no-poster.svg') }}';"
             alt="{{ movie.title }}">
         <div class="cx-detail-shade"></div>
 
         <div class="cx-detail-content">
             <img
                 class="cx-detail-poster"
-                src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('generated_movie_poster', movie_id=movie.id)) }}"
-                onerror="this.src='{{ url_for('generated_movie_poster', movie_id=movie.id) }}';"
+                src="{{ movie.poster_url if movie.poster_url and movie.poster_url.startswith('http') else (url_for('static', filename=movie.poster_url) if movie.poster_url else url_for('static', filename='images/no-poster.svg')) }}"
+                onerror="this.src='{{ url_for('static', filename='images/no-poster.svg') }}';"
                 alt="{{ movie.title }}">
 
             <div class="cx-detail-copy">
@@ -37,12 +37,6 @@
                     <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="modal" data-bs-target="#trailerModal">
                         <i class="fas fa-play"></i> Watch Trailer
                     </button>
-                    {% endif %}
-
-                    {% if movie.release_date and movie.release_date >= today_key %}
-                    <a class="btn btn-primary btn-lg" href="{{ bookmyshow_movie_url(movie) }}" target="_blank" rel="noopener noreferrer">
-                        <i class="fas fa-ticket-alt"></i> Book Now
-                    </a>
                     {% endif %}
 
                     <a class="btn btn-outline-warning btn-lg" href="{{ justwatch_url }}" target="_blank" rel="noopener noreferrer">
@@ -155,8 +149,8 @@
                 <a class="cx-premiere-poster" href="{{ url_for('movie_bp.movie_details', movie_id=item.id) }}">
                     <span class="cx-premiere-img">
                         <img
-                            src="{{ item.poster_url if item.poster_url and item.poster_url.startswith('http') else (url_for('static', filename=item.poster_url) if item.poster_url else url_for('generated_movie_poster', movie_id=item.id)) }}"
-                            onerror="this.src='{{ url_for('generated_movie_poster', movie_id=item.id) }}';"
+                            src="{{ item.poster_url if item.poster_url and item.poster_url.startswith('http') else (url_for('static', filename=item.poster_url) if item.poster_url else url_for('static', filename='images/no-poster.svg')) }}"
+                            onerror="this.src='{{ url_for('static', filename='images/no-poster.svg') }}';"
                             alt="{{ item.title }}">
                     </span>
                     <strong>{{ item.title }}</strong>

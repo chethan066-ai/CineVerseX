@@ -121,13 +121,13 @@ def ensure_schema_updates():
             connection.exec_driver_sql("ALTER TABLE tickets ADD COLUMN booking_id INTEGER")
 
         if "trailer_url" not in movie_columns:
-            connection.exec_driver_sql("ALTER TABLE movies ADD COLUMN trailer_url VARCHAR(300)")
+            connection.exec_driver_sql("ALTER TABLE movies ADD COLUMN trailer_url VARCHAR(500)")
 
         movie_updates = {
-            "justwatch_url": "ALTER TABLE movies ADD COLUMN justwatch_url VARCHAR(300)",
-            "bookmyshow_url": "ALTER TABLE movies ADD COLUMN bookmyshow_url VARCHAR(300)",
-            "bookmyshow_movie_url": "ALTER TABLE movies ADD COLUMN bookmyshow_movie_url VARCHAR(300)",
-            "bookmyshow_ticket_url": "ALTER TABLE movies ADD COLUMN bookmyshow_ticket_url VARCHAR(300)",
+            "justwatch_url": "ALTER TABLE movies ADD COLUMN justwatch_url VARCHAR(500)",
+            "bookmyshow_url": "ALTER TABLE movies ADD COLUMN bookmyshow_url VARCHAR(500)",
+            "bookmyshow_movie_url": "ALTER TABLE movies ADD COLUMN bookmyshow_movie_url VARCHAR(500)",
+            "bookmyshow_ticket_url": "ALTER TABLE movies ADD COLUMN bookmyshow_ticket_url VARCHAR(500)",
             "tmdb_id": "ALTER TABLE movies ADD COLUMN tmdb_id INTEGER",
             "tmdb_url": "ALTER TABLE movies ADD COLUMN tmdb_url VARCHAR(300)",
             "data_source": "ALTER TABLE movies ADD COLUMN data_source VARCHAR(50) DEFAULT 'manual'",
@@ -137,6 +137,8 @@ def ensure_schema_updates():
             "director_names": "ALTER TABLE movies ADD COLUMN director_names TEXT",
             "writer_names": "ALTER TABLE movies ADD COLUMN writer_names TEXT",
             "backdrop_url": "ALTER TABLE movies ADD COLUMN backdrop_url VARCHAR(500)",
+            "interested_count": "ALTER TABLE movies ADD COLUMN interested_count INTEGER DEFAULT 0",
+            "release_status": "ALTER TABLE movies ADD COLUMN release_status VARCHAR(50) DEFAULT 'Coming Soon'",
         }
 
         for column, statement in movie_updates.items():
