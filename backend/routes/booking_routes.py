@@ -310,10 +310,10 @@ def ticket_details(booking_id):
 @booking_bp.route("/booking-history")
 @login_required
 def booking_history():
-    if current_user.role == "admin":
+    if session.get("user_role") == "admin":
         bookings = Booking.query.order_by(Booking.booked_at.desc()).all()
     else:
-        bookings = Booking.query.filter_by(user_id=current_user.id)\
+        bookings = Booking.query.filter_by(user_id=session["user_id"])\
             .order_by(Booking.booked_at.desc()).all()
 
     return render_template("booking_history.html", bookings=bookings)
